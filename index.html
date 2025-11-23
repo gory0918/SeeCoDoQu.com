@@ -1,97 +1,118 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Seecodoqu Floating</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: #0d1117;
-      font-family: "Pretendard", sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      position: relative;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeeCoDoQu Universe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #030712; /* gray-950 */
+            background-image: radial-gradient(circle at center, rgba(30, 58, 138, 0.4), #030712 70%);
+            color: white;
+            font-family: monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    .logo-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 1;
-    }
+        /* 우주 전체 회전 애니메이션 */
+        @keyframes orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-    .logo-container img {
-      max-width: 300px;
-      margin: 10px;
-    }
+        /* 텍스트 역회전 애니메이션 (글자 똑바로 유지) */
+        @keyframes counter-orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
 
-    .word {
-      position: absolute;
-      color: #e2e8f0;
-      font-size: 28px;
-      font-weight: 600;
-      pointer-events: none;
-      user-select: none;
-      white-space: nowrap;
-      animation: float linear infinite;
-      z-index: 0;
-    }
+        /* 로고 컨테이너 스타일 */
+        .logo-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column; /* 로고 두 개를 위아래로 배치 */
+            align-items: center;
+            gap: 15px; /* 로고 사이 간격 */
+            z-index: 1; /* 별들보다 뒤에, 혹은 겹치게 */
+            pointer-events: none; /* 로고 위에서도 드래그나 클릭이 배경으로 통하게 */
+        }
 
-    @keyframes float {
-      from {
-        transform: translateY(0px) translateX(0px);
-      }
-      to {
-        transform: translateY(-200px) translateX(200px);
-      }
-    }
-  </style>
+        /* 로고 이미지 스타일 */
+        .logo-container img {
+            max-width: 180px; /* 모바일 대응 크기 조절 */
+            height: auto;
+            opacity: 0.9;
+            /* 우주 느낌 나게 은은한 그림자 효과 */
+            filter: drop-shadow(0 0 15px rgba(96, 165, 250, 0.3)); 
+            transition: transform 0.3s;
+        }
+
+        /* 미디어 쿼리: 화면이 클 때는 로고를 좀 더 키움 */
+        @media (min-width: 768px) {
+            .logo-container img {
+                max-width: 250px;
+            }
+        }
+
+        #galaxy-container {
+            position: relative;
+            width: 0;
+            height: 0;
+            animation: orbit 140s linear infinite; /* 좀 더 천천히 돔 */
+            z-index: 10;
+        }
+
+        .star-word {
+            position: absolute;
+            white-space: nowrap;
+            text-align: center;
+            font-weight: bold;
+            transform-origin: center center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8); /* 글자 가독성 위해 그림자 추가 */
+        }
+
+        .star-word:hover {
+            color: #22d3ee !important;
+            transform: scale(1.2);
+            z-index: 100;
+        }
+
+        .star-word span {
+            display: block;
+            animation: counter-orbit 140s linear infinite;
+        }
+    </style>
 </head>
 <body>
-  <div class="logo-container">
-    <img src="SeeCo_Logo.png" alt="SeeCo Logo" />
-    <img src="SeeCo_F4H4.png" alt="Fair/Hour Logo" />
-  </div>
 
-  <script>
-    const wordSets = [
-      ["Free → Fort", "방어력·기반 에너지", "Hour(시간 관리)", "Hesitate(주저하지 마라)"],
-      ["Fair → Follow", "통솔력·관계 에너지", "Home(공정한 관계)", "Hide(감추지 마라)"],
-      ["Fund → Force", "근력·생존 에너지", "Health(건강)", "Hurry(서두르지 마라)"],
-      ["Funn → Feel", "매력·긍정 에너지", "Happy(소소한 만족)", "Hate(증오를 심지 마라)"]
-    ];
+    <div class="logo-container">
+        <img src="SeeCo_Logo.png" alt="SeeCo Logo" />
+        <img src="SeeCo_F4H4.png" alt="Fair/Hour Logo" />
+    </div>
 
-    function spawnWord(text) {
-      const el = document.createElement("div");
-      el.className = "word";
-      el.innerText = text;
+    <div id="galaxy-container"></div>
 
-      const x = Math.random() * window.innerWidth;
-      const y = Math.random() * window.innerHeight;
-      const duration = 6 + Math.random() * 6;
-
-      el.style.left = x + "px";
-      el.style.top = y + "px";
-      el.style.opacity = 0.8;
-      el.style.animationDuration = duration + "s";
-
-      document.body.appendChild(el);
-
-      setTimeout(() => el.remove(), duration * 1000);
-    }
-
-    function loop() {
-      const set = wordSets[Math.floor(Math.random() * wordSets.length)];
-      const word = set[Math.floor(Math.random() * set.length)];
-      spawnWord(word);
-      setTimeout(loop, 800);
-    }
-
-    loop();
-  </script>
-</body>
-</html>
+    <script>
+        const WORDS = [
+            // 1. OTL 시리즈 (황금색 - 중심부)
+            { text: "OTL (Overtime Tears Language) ㅇㅜㄴ = 운이다", group: 'gold' },
+            { text: "OTZ (Overtime Tears Zone) ㅇㅜㄹ = 울어라", group: 'gold' },
+            { text: "orz 오oh 로ro 지zi 돈 세배(새배)", group: 'gold' },
+            { text: "OTL 자세로 일어서면 극기훈련", group: 'gold' },
+            { text: "서로 등대고 서면 서로의 버팀목", group: 'gold' },
+            { text: "좌절은 강한 인생 근육 만들 기회", group: 'gold' },
+            { text: "시름시름 앓다가 씨름 기술 뒤집기 한판", group: 'gold' },
+            
+            // 2. F4 긍정 로직 (파란색 - 중간)
+            { text: "Fort (방어력) ? Hour : Hesitate", group: 'blue' },
+            { text: "Follow (통솔력) ? Home : Hide", group: 'blue' },
+            { text: "Force (생존력) ? Health : Hurry", group: '
