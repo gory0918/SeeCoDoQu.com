@@ -9,13 +9,14 @@
             margin: 0;
             overflow: hidden;
             background-color: #030712; /* gray-950 */
-            background-image: radial-gradient(circle at center, rgba(30, 58, 138, 0.4), #030712 70%);
+            background-image: radial-gradient(circle at center, rgba(30, 58, 138, 0.4), #030712 80%);
             color: white;
-            font-family: monospace;
+            font-family: 'Courier New', monospace; /* 폰트 강제 지정 */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100vw;
         }
 
         /* 우주 전체 회전 애니메이션 */
@@ -24,65 +25,62 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 텍스트 역회전 애니메이션 (글자 똑바로 유지) */
+        /* 텍스트 역회전 (글자 똑바로 유지) */
         @keyframes counter-orbit {
             from { transform: rotate(0deg); }
             to { transform: rotate(-360deg); }
         }
 
-        /* 로고 컨테이너 스타일 */
+        /* 중앙 로고 컨테이너 */
         .logo-container {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             display: flex;
-            flex-direction: column; /* 로고 두 개를 위아래로 배치 */
+            flex-direction: column;
             align-items: center;
-            gap: 15px; /* 로고 사이 간격 */
-            z-index: 1; /* 별들보다 뒤에, 혹은 겹치게 */
-            pointer-events: none; /* 로고 위에서도 드래그나 클릭이 배경으로 통하게 */
+            gap: 15px;
+            z-index: 5; /* 별들보다 아래 */
+            pointer-events: none;
         }
 
-        /* 로고 이미지 스타일 */
         .logo-container img {
-            max-width: 180px; /* 모바일 대응 크기 조절 */
+            max-width: 180px; 
             height: auto;
-            opacity: 0.9;
-            /* 우주 느낌 나게 은은한 그림자 효과 */
-            filter: drop-shadow(0 0 15px rgba(96, 165, 250, 0.3)); 
-            transition: transform 0.3s;
+            filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.4)); 
         }
 
-        /* 미디어 쿼리: 화면이 클 때는 로고를 좀 더 키움 */
         @media (min-width: 768px) {
-            .logo-container img {
-                max-width: 250px;
-            }
+            .logo-container img { max-width: 250px; }
         }
 
+        /* 은하수 컨테이너 */
         #galaxy-container {
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             width: 0;
             height: 0;
-            animation: orbit 140s linear infinite; /* 좀 더 천천히 돔 */
-            z-index: 10;
+            /* z-index를 높여서 로고 위에 글자가 떠다니게 함 (원하면 낮추세요) */
+            z-index: 10; 
+            animation: orbit 140s linear infinite;
         }
 
+        /* 개별 단어 스타일 */
         .star-word {
             position: absolute;
             white-space: nowrap;
             text-align: center;
             font-weight: bold;
-            transform-origin: center center;
             cursor: pointer;
             transition: all 0.3s;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8); /* 글자 가독성 위해 그림자 추가 */
+            /* 중요: 이 속성이 있어야 정확히 좌표 중심에 글자가 옴 */
+            transform: translate(-50%, -50%); 
         }
 
         .star-word:hover {
             color: #22d3ee !important;
-            transform: scale(1.2);
             z-index: 100;
         }
 
@@ -102,17 +100,79 @@
     <div id="galaxy-container"></div>
 
     <script>
-        const WORDS = [
-            // 1. OTL 시리즈 (황금색 - 중심부)
-            { text: "OTL (Overtime Tears Language) ㅇㅜㄴ = 운이다", group: 'gold' },
-            { text: "OTZ (Overtime Tears Zone) ㅇㅜㄹ = 울어라", group: 'gold' },
-            { text: "orz 오oh 로ro 지zi 돈 세배(새배)", group: 'gold' },
-            { text: "OTL 자세로 일어서면 극기훈련", group: 'gold' },
-            { text: "서로 등대고 서면 서로의 버팀목", group: 'gold' },
-            { text: "좌절은 강한 인생 근육 만들 기회", group: 'gold' },
-            { text: "시름시름 앓다가 씨름 기술 뒤집기 한판", group: 'gold' },
-            
-            // 2. F4 긍정 로직 (파란색 - 중간)
-            { text: "Fort (방어력) ? Hour : Hesitate", group: 'blue' },
-            { text: "Follow (통솔력) ? Home : Hide", group: 'blue' },
-            { text: "Force (생존력) ? Health : Hurry", group: '
+        // 페이지 로딩이 다 끝난 뒤 실행
+        window.onload = function() {
+            const WORDS = [
+                // 1. Gold Group
+                { text: "OTL (Overtime Tears Language) = 운이다", group: 'gold' },
+                { text: "OTZ (Overtime Tears Zone) = 울어라", group: 'gold' },
+                { text: "orz 오oh 로ro 지zi 돈 세배", group: 'gold' },
+                { text: "OTL 자세로 일어서면 극기훈련", group: 'gold' },
+                { text: "서로 등대고 서면 버팀목", group: 'gold' },
+                { text: "좌절은 강한 인생 근육 기회", group: 'gold' },
+                { text: "시름시름 앓다가 뒤집기 한판", group: 'gold' },
+                
+                // 2. Blue Group
+                { text: "Fort (방어) ? Hour : Hesitate", group: 'blue' },
+                { text: "Follow (통솔) ? Home : Hide", group: 'blue' },
+                { text: "Force (생존) ? Health : Hurry", group: 'blue' },
+                { text: "Feel (매력) ? Happy : Hate", group: 'blue' },
+                
+                // 3. Gray Group
+                { text: "Free ↔ Fear (상실)", group: 'gray' },
+                { text: "Fair ↔ Foul (비산)", group: 'gray' },
+                { text: "Fund ↔ Fake (낭비)", group: 'gray' },
+                { text: "Funn ↔ Flaw (고갈)", group: 'gray' },
+                
+                // 4. White Group
+                { text: "SeeCoDoQu", group: 'white' },
+                { text: "Thinking Training", group: 'white' },
+                { text: "Life Management", group: 'white' },
+            ];
+
+            const container = document.getElementById('galaxy-container');
+            const GOLDEN_ANGLE = 137.5 * (Math.PI / 180);
+
+            WORDS.forEach((item, i) => {
+                const wordDiv = document.createElement('div');
+                wordDiv.className = 'star-word';
+                
+                // 거리 계산 로직 수정 (너무 멀리 안 가게)
+                // 로고 크기(약 150px) 고려하여 160px 부터 시작
+                const spacing = 40; 
+                // i에 숫자를 더해서 시작점을 밖으로 밀어냄 (로고랑 안 겹치게)
+                const startRadius = 160; 
+                // 피보나치 나선 공식 응용
+                const radius = startRadius + (spacing * Math.sqrt(i * 1.5)); 
+                
+                const theta = i * GOLDEN_ANGLE;
+                
+                const x = radius * Math.cos(theta);
+                const y = radius * Math.sin(theta);
+
+                // CSS에 transform: translate(-50%, -50%)가 있으므로 left/top만 주면 됨
+                wordDiv.style.left = x + 'px';
+                wordDiv.style.top = y + 'px';
+
+                // 크기 및 투명도 계산
+                const scale = Math.max(0.8, 1.3 - (i * 0.03));
+                const opacity = Math.max(0.6, 1 - (i * 0.03)); // 투명도 최소값 올림
+                
+                let color = '#ffffff';
+                if (item.group === 'gold') color = '#fbbf24';
+                else if (item.group === 'blue') color = '#60a5fa';
+                else if (item.group === 'gray') color = '#9ca3af';
+
+                wordDiv.style.fontSize = scale + 'rem';
+                wordDiv.style.color = color;
+                wordDiv.style.opacity = opacity;
+
+                // 텍스트 삽입
+                wordDiv.innerHTML = `<span>${item.text}</span>`;
+                
+                container.appendChild(wordDiv);
+            });
+        };
+    </script>
+</body>
+</html>
