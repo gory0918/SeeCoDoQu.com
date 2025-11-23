@@ -1,24 +1,97 @@
-
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Seecodoqu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seecodoqu Floating</title>
   <style>
     body {
-      display: flex;
-      justify-content: center;   /* 가로 방향 정렬 */
-      align-items: center;       /* 세로 방향 정렬 */
+      margin: 0;
       height: 100vh;
-      background: #f5f5f5;
+      background: #0d1117;
+      font-family: "Pretendard", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
     }
-    img {
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .logo-container img {
       max-width: 300px;
-      margin: 10px;              /* 이미지 사이 간격 */
+      margin: 10px;
+    }
+
+    .word {
+      position: absolute;
+      color: #e2e8f0;
+      font-size: 28px;
+      font-weight: 600;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      animation: float linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      from {
+        transform: translateY(0px) translateX(0px);
+      }
+      to {
+        transform: translateY(-200px) translateX(200px);
+      }
     }
   </style>
 </head>
 <body>
-  <img src="SeeCo_Logo.png" alt="SeeCo Logo" />
-  <img src="SeeCo_F4H4.png" alt="Fair/Hour Logo" />
+  <div class="logo-container">
+    <img src="SeeCo_Logo.png" alt="SeeCo Logo" />
+    <img src="SeeCo_F4H4.png" alt="Fair/Hour Logo" />
+  </div>
+
+  <script>
+    const wordSets = [
+      ["Free → Fort", "방어력·기반 에너지", "Hour(시간 관리)", "Hesitate(주저하지 마라)"],
+      ["Fair → Follow", "통솔력·관계 에너지", "Home(공정한 관계)", "Hide(감추지 마라)"],
+      ["Fund → Force", "근력·생존 에너지", "Health(건강)", "Hurry(서두르지 마라)"],
+      ["Funn → Feel", "매력·긍정 에너지", "Happy(소소한 만족)", "Hate(증오를 심지 마라)"]
+    ];
+
+    function spawnWord(text) {
+      const el = document.createElement("div");
+      el.className = "word";
+      el.innerText = text;
+
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      const duration = 6 + Math.random() * 6;
+
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+      el.style.opacity = 0.8;
+      el.style.animationDuration = duration + "s";
+
+      document.body.appendChild(el);
+
+      setTimeout(() => el.remove(), duration * 1000);
+    }
+
+    function loop() {
+      const set = wordSets[Math.floor(Math.random() * wordSets.length)];
+      const word = set[Math.floor(Math.random() * set.length)];
+      spawnWord(word);
+      setTimeout(loop, 800);
+    }
+
+    loop();
+  </script>
 </body>
 </html>
